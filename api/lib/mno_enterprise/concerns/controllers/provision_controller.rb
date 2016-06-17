@@ -7,7 +7,7 @@ module MnoEnterprise::Concerns::Controllers::ProvisionController
   # 'included do' causes the included code to be evaluated in the
   # context where it is included rather than being executed in the module's context
   included do
-    before_filter :authenticate_user_or_signup!
+    before_filter :authenticate_params
 
     protected
     # The path used after purchased apps have been provisionned
@@ -60,6 +60,16 @@ module MnoEnterprise::Concerns::Controllers::ProvisionController
     end
 
     render json: app_instances.map(&:attributes).to_json, status: :created
+  end
+  
+  def authenticate_params
+    
+    if(!params[:partner].empty?)
+      cookies[:source_partner] = params[:partner]
+    end
+    
+    authenticate_user_or_signup!
+    
   end
 
 end
