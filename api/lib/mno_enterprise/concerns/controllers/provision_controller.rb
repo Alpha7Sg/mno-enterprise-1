@@ -64,7 +64,7 @@ module MnoEnterprise::Concerns::Controllers::ProvisionController
   
   def authenticate_params
     
-    if(!params[:partner].empty?)
+    if(!params[:partner].nil?)
       cookies[:source_partner] = params[:partner]
     end
     
