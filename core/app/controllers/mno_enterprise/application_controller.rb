@@ -36,7 +36,7 @@ module MnoEnterprise
 
     def set_default_meta
       @meta = {}
-      @meta[:title] = "Application"
+      @meta[:title] = MnoEnterprise.app_name
       @meta[:description] = "Enterprise Applications"
     end
 
@@ -98,8 +98,12 @@ module MnoEnterprise
     # Redirect to previous url and reset it
     def after_sign_in_path_for(resource)
       previous_url = session.delete(:previous_url)
-      url = MnoEnterprise.router.dashboard_path || main_app.root_url
-      return (return_to_url(resource) || previous_url || url)
+      default_url = if resource.respond_to?(:admin_role) && resource.admin_role.present?
+        MnoEnterprise.router.admin_path
+      else
+        MnoEnterprise.router.dashboard_path || main_app.root_url
+      end
+      return (return_to_url(resource) || previous_url || default_url)
     end
 
     # Some controllers needs to redirect to 'MySpace' which breaks if you dont use mnoe-frontend
@@ -117,6 +121,22 @@ module MnoEnterprise
     # Overwriting the sign_out redirect path method
     def after_sign_out_path_for(resource_or_scope)
       MnoEnterprise.router.after_sign_out_url || super
+    end
+
+    private
+
+    # Append params to the fragment part of an existing url String
+    #   add_param("/#/platform/accounts", 'foo', 'bar')
+    #     => "/#/platform/accounts?foo=bar"
+    #   add_param("/#/platform/dashboard/he/43?en=690", 'foo', 'bar')
+    #     => "/#/platform/dashboard/he/43?en=690&foo=bar"
+    def add_param_to_fragment(url, param_name, param_value)
+      uri = URI(url)
+      fragment = URI(uri.fragment || "")
+      params = URI.decode_www_form(fragment.query || "") << [param_name, param_value]
+      fragment.query = URI.encode_www_form(params)
+      uri.fragment = fragment.to_s
+      uri.to_s
     end
   end
 end

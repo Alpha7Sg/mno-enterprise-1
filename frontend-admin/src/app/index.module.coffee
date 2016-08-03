@@ -1,4 +1,6 @@
 @App = angular.module 'frontendAdmin', [
+  'mnoEnterprise.configuration',
+
   'ngAnimate',
   'ngAria',
   'ngCookies',
@@ -9,6 +11,8 @@
   'toastr',
   'ncy-angular-breadcrumb',
   'platanus.inflector',
+  'smart-table',
   'angularMoment',
-  'duScroll'
+  'duScroll',
+  'ngPageTitle'
 ]
