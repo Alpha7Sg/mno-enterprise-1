@@ -61,12 +61,16 @@ module MnoEnterprise::Concerns::Controllers::ProvisionController
 
     render json: app_instances.map(&:attributes).to_json, status: :created
   end
-  
+
   def authenticate_params
     
     if(!params[:partner].nil?)
       cookies[:source_partner] = params[:partner]
     end
+
+    if(!params[:campaign].nil?)
+      cookies[:campaign] = params[:campaign]
+    end 
     
     authenticate_user_or_signup!
     
