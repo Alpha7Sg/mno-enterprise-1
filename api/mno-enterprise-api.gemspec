@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://maestrano.com"
   s.summary     = "Maestrano Enterprise - API"
   s.description = "Maestrano Enterprise - essentials API"
-  s.license     = "Maestrano Enterprise License V1"
+  s.license     = "Apache-2.0"
 
   s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
@@ -27,7 +27,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'coffee-rails', '~> 4.1'
   s.add_runtime_dependency 'health_check', '~> 1.5'
   s.add_runtime_dependency 'httparty', '~> 0.13.7'
-
   # Lock sprocket version
   s.add_dependency 'sprockets-rails', '~> 2.3'
+
+  s.add_development_dependency 'intercom', '~> 3.5.4'
 end

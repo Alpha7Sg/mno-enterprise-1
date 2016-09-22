@@ -5,6 +5,10 @@
 </p>
 
 [![Gem Version](https://badge.fury.io/rb/mno-enterprise.svg)](https://rubygems.org/gems/mno-enterprise)
+[![Build Status](https://travis-ci.org/maestrano/mno-enterprise.svg?branch=master)](https://travis-ci.org/maestrano/mno-enterprise)
+[![Dependency Status](https://gemnasium.com/badges/github.com/maestrano/mno-enterprise.svg)](https://gemnasium.com/github.com/maestrano/mno-enterprise)
+[![Code Climate](https://codeclimate.com/github/maestrano/mno-enterprise/badges/gpa.svg)](https://codeclimate.com/github/maestrano/mno-enterprise)
+[![Test Coverage](https://codeclimate.com/github/maestrano/mno-enterprise/badges/coverage.svg)](https://codeclimate.com/github/maestrano/mno-enterprise/coverage)
 
 The Maestrano Enterprise Engine can be included in a Rails project to bootstrap an instance of Maestrano Enterprise Express.
 
@@ -111,6 +115,46 @@ MnoEnterprise.configure do |config|
 end
 ```
 
+#### SMTP
+SMTP server settings are needed to send emails via SMTP. In case there's no SMTP server, a personal gmail account could be used as an alternative.
+To use gmail to send SMTP emails, the gmail account should be set to allow "less secure apps".
+Typically for security reasons, system environment variables 'SMTP_USERNAME' and 'SMTP_PASSWORD' should be used to set the SMTP credentials.
+
+```ruby
+# Gemfile
+gem 'premailer-rails'
+
+# config/environments/production.rb
+Rails.application.configure do
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.default_url_options = { :host => host_domain, :port => port_number }
+  config.action_mailer.asset_host = your_apps_root_url
+  config.action_mailer.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'gmail.com',
+    user_name:            ENV['SMTP_USERNAME'],
+    password:             ENV['SMTP_PASSWORD'],
+    authentication:       'plain',
+    enable_starttls_auto: true  
+  }
+end
+
+# config/initializers/mno_enterprise.rb
+MnoEnterprise.configure do |config|
+  config.mail_adapter = :smtp
+end
+
+# config/initializers/assets.rb
+Rails.application.config.assets.precompile += %w( mno_enterprise/mail.css )
+```
+
+##### Customization of mail templates
+- You can override the default mail templates by adding template files ( template-name.html.erb, template-name.text.erb ) to the mail view directory (/app/views/system_notifications).
+- Logo can also be overriden by adding your own logo image (main-logo.png) to the image assets directory (/app/assets/images/mno_enterprise).
+- Write your own stylesheet by adding mail.css file to the stylesheets directory (/app/assets/stylesheets/mno_enterprise). The css rules you write will be applied to all the mail templates including the default ones.
+
 ## Building the frontend
 The Maestrano Enterprise frontend is a Single Page Application (SPA) that is separate from the Rails project. The source code for this frontend can be found on the [mno-enterprise-angular Github repository](https://github.com/maestrano/mno-enterprise-angular)
 
@@ -142,17 +186,39 @@ This action will save the current style in /frontend/src/app/stylesheets/theme-p
 
 ## Extending the Frontend
 You can easily override or extend the Frontend by adding files to the /frontend directory. All files in this directory will be taken into account during the frontend build and will override the base files of the mno-enterprise-angular project.
+You can also override the login page background adding an image and gif loaders, which is managed by rails,  including the files into the path ../app/assets/images/mno_enterprise. You can generate really cool gifs for this task in pages like http://loading.io/ .
+
 
 Files in this folder MUST follow the [mno-enterprise-angular](https://github.com/maestrano/mno-enterprise-angular) directory structure. For example, you can override the application layout by creating /frontend/src/app/views/layout.html in your project - it will override the original src/app/views/layout.yml file of the mno-enterprise-angular project.
 
 You can also add new files to this directory such as adding new views. This allows you to easily extend the current frontend to suit your needs.
 
-While extending the frontend, you can run this command to start the frontend using gulp serve and automatically override the original files with the ones in the frontend folder:
+While extending the frontend, you can run this command to start the frontend using gulp serve and automatically override the original files with the ones in the frontend folder(be aware it does not take into account images or folders):
 ```bash
 foreman start -f Procfile.dev
 ```
 
 This will accelerate your development as the gulp serve task use BrowserSync to reload the browser any time a file is changed.
+
+### Adding a custom font
+
+It is possible to add custom fonts, shared all over the rails application screens and the AngularJS SPA.
+
+Simply copy the font files under the directory `/frontend/src/fonts/` of your host application and create a `font-faces.less` file containing your *font-face* definitions.
+
+An example of a project using a custom font can be seen on the [mno-enterprise-demo](https://github.com/maestrano/mno-enterprise-demo) project.
+
+NB: Your host project may have been generated or created before the implementation of this feature, in this case make sure the file `/app/assets/stylesheets/main.less` contains:
+```less
+// Import custom fonts
+//--------------------------------------------
+@import "../../../frontend/src/fonts/font-faces";
+```
+
+### Adding favicon
+
+Use  http://www.favicon-generator.org/ to generate all the favicon and put them in frontend/src/images/favicons
+
 
 ## Replacing the Frontend
 
@@ -252,7 +318,7 @@ First switch to a new branch such as v2-to-v3.
 git co -b v2-to-v3
 ```
 
-Open your Gemfile and ensure that your project points to the v3.0-dev of Maestrano Enterprise. You gemfile should look like this:
+Open your Gemfile and ensure that your project points to the v3.0-dev branch of Maestrano Enterprise. You gemfile should look like this:
 ```ruby
 gem 'mno-enterprise', git: 'https://some-token:x-oauth-basic@github.com/alachaum/mno-enterprise.git', branch: 'v3.0-dev'
 ```
@@ -323,6 +389,17 @@ Launch your application, your style should now be reapplied.
 The v3 is currently being finalised. There are some minor configuration options that still need to be implemented such as the "impact endpoint urls".
 
 If deploying to UAT, the Impac! URLs need to be manually replaced. Search the "/public" directory for "http://localhost:4000" and replace by "https://api-impac-uat.maestrano.io". Save the files and deploy.
+
+## Update mnoe-angular to the version in the bower.json.
+```
+rake mnoe:frontend:update
+```
+
+## Update the version of the gem according to the gemfile.
+```
+bundle update mno-enterprise
+
+```
 
 ## Contributing
 

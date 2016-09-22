@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://maestrano.com"
   s.summary     = "Maestrano Enterprise - Core functionnality"
   s.description = "Core functionnality of MNOE. This handles the core functionnality."
-  s.license     = "Maestrano Enterprise License V1"
+  s.license     = "Apache-2.0"
 
   s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
@@ -42,4 +42,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'figaro'
   # Config files per environment
   s.add_dependency 'config', '~> 1.0.0'
+
+  # Emailing
+  # s.add_development_dependency 'mandrill-api', '~> 1.0.53'
+  s.add_development_dependency 'sparkpost', '~> 0.1.4'
 end
