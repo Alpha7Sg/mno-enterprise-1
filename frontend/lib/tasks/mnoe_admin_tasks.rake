@@ -47,7 +47,7 @@ namespace :mnoe do
       end
 
       # Copy assets to public
-      cp_r("#{frontend_tmp_folder}/dist/.", "#{admin_dist_folder}/")
+      cp_r("#{frontend_working_dir}/dist/.", "#{admin_dist_folder}/")
 
       # Clear tmp cache in development - recompile assets otherwise
       if Rails.env.development? || Rails.env.test?
@@ -63,7 +63,7 @@ namespace :mnoe do
       rm_rf "#{admin_dist_folder}"
       rm_rf "#{frontend_tmp_folder}"
       mkdir_p frontend_tmp_folder
-      cp_r(File.join(Gem.loaded_specs["mno-enterprise"].full_gem_path, "#{frontend_orig_folder}/"), "#{frontend_tmp_folder}/")
+      cp_r(File.join(Gem.loaded_specs["mno-enterprise"].full_gem_path, "#{frontend_orig_folder}/."), "#{frontend_tmp_folder}/")
     end
   end
 end
