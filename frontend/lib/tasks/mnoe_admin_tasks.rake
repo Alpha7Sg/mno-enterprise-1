@@ -7,7 +7,7 @@ require 'fileutils'
 namespace :mnoe do
   namespace :admin do
     admin_dist_folder = "public/admin"
-    frontend_tmp_folder = 'tmp/build/admin'
+    frontend_tmp_folder = 'tmp/build/admin/frontend-admin'
     frontend_orig_folder = 'frontend-admin'
 
     # Use bundled gulp
