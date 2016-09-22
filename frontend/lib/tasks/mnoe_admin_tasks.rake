@@ -7,9 +7,9 @@ require 'fileutils'
 namespace :mnoe do
   namespace :admin do
     admin_dist_folder = "public/admin"
-    frontend_tmp_folder = 'tmp/build/admin/frontend-admin'
+    frontend_tmp_folder = 'tmp/build/admin'
     frontend_orig_folder = 'frontend-admin'
-
+    frontend_working_dir = 'tmp/build/admin/frontend'
     # Use bundled gulp
     gulp = "./node_modules/.bin/gulp"
 
@@ -32,7 +32,7 @@ namespace :mnoe do
       Rake::Task['mnoe:admin:prepare_build_folder'].execute
 
       # Build frontend using Gulp
-      Dir.chdir(frontend_tmp_folder) do
+      Dir.chdir(frontend_working_dir) do
         sh "npm install"
         sh "bower install"
         sh gulp
