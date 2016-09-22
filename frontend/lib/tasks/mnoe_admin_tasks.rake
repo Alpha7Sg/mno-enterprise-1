@@ -9,7 +9,7 @@ namespace :mnoe do
     admin_dist_folder = "public/admin"
     frontend_tmp_folder = 'tmp/build/admin'
     frontend_orig_folder = 'frontend-admin'
-    frontend_working_dir = 'tmp/build/admin/frontend'
+    frontend_working_dir = 'tmp/build/admin/frontend-admin'
     # Use bundled gulp
     gulp = "./node_modules/.bin/gulp"
 
